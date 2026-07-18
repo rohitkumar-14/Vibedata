@@ -1,0 +1,58 @@
+{
+    "test_file.csv": {
+        "id": "int64",
+        "name": "str",
+        "age": "int64"
+    },
+    "test.csv": {
+        "id": "int64",
+        "feature1": "float64",
+        "feature2": "float64",
+        "label": "int64",
+        "date_col": "str"
+    },
+    "test_eda.csv": {
+        "id": "int64",
+        "salary": "int64",
+        "age": "int64",
+        "category": "str",
+        "region": "str"
+    },
+    "normal.csv": {
+        "group": "str",
+        "value": "float64"
+    },
+    "skewed.csv": {
+        "group": "str",
+        "value": "float64"
+    },
+    "sample_data.csv": {
+        "transaction_id": "int64",
+        "customer_id": "int64",
+        "signup_date": "str",
+        "product_category": "str",
+        "amount_spent": "float64",
+        "session_duration_mins": "float64",
+        "churned": "int64"
+    },
+    "users.csv": {
+        "id": "int64",
+        "name": "str",
+        "role": "str"
+    },
+    "retail_sales_demo.csv": {
+        "order_id": "str",
+        "customer_id": "str",
+        "customer_name": "str",
+        "country": "str",
+        "latitude": "float64",
+        "longitude": "float64",
+        "product_sku": "str",
+        "product_name": "str",
+        "quantity": "int64",
+        "unit_price": "float64",
+        "total_price": "float64",
+        "order_status": "str",
+        "order_date": "str"
+    }
+}

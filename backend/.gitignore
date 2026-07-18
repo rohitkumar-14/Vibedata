@@ -1,0 +1,22 @@
+# Backend environment variables
+.env
+.env.*
+!.env.example
+
+# Python Virtual Environments
+.venv/
+venv/
+env/
+
+# Python Cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Run-time configurations
+connections.json
