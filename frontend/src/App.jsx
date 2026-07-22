@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { MessageSquare, Upload, Sparkles, LineChart, Download, Terminal, FileCode, CheckCircle2, Award, Clipboard, BarChart2, Lightbulb, History, Cpu, Target, Menu, X, Moon, Sun, LogOut, Share2, Presentation, Link, Copy, HelpCircle, Settings } from "lucide-react";
+import { MessageSquare, Upload, Sparkles, LineChart, Download, Terminal, FileCode, CheckCircle2, Award, Clipboard, BarChart2, Lightbulb, History, Cpu, Target, Menu, X, Moon, Sun, LogOut, Share2, Presentation, Link, Copy, HelpCircle, Settings, BookOpen } from "lucide-react";
 import pptxgen from "pptxgenjs";
 import { Joyride } from 'react-joyride';
 import ChatSection from "./components/ChatSection";
@@ -18,6 +18,7 @@ import AuditLog from "./components/AuditLog";
 import MasterAgent from "./components/MasterAgent";
 import LandingPage from "./components/LandingPage";
 import UserGuide from "./components/UserGuide";
+import CaseStudies from "./components/CaseStudies";
 
 const safeJSONParse = (key, defaultValue) => {
   const saved = localStorage.getItem(key);
@@ -406,6 +407,20 @@ export default function App() {
         );
       case 11: // Phase 11: Export & Communicate
         return renderExportRoom();
+      case 97: // Case Studies
+        return (
+          <CaseStudies
+            onLoadDemo={async (datasetKey) => {
+              const res = await fetch(`/api/upload/demo/${datasetKey}`, { method: "POST" });
+              if (res.ok) {
+                const data = await res.json();
+                setSummary(data);
+                setActiveStep(2);
+              }
+            }}
+            onNavigateStep={(step) => handleStepChange(step)}
+          />
+        );
       case 98: // Master Agent
         if (!summary) return renderLoadWarning();
         return <MasterAgent summary={summary} />;
@@ -716,6 +731,9 @@ export default function App() {
         </div>
 
         <div style={{ borderTop: "1px solid var(--border-color)", paddingTop: "1rem", paddingBottom: "1rem", display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+          <button onClick={() => setActiveStep(97)} className={`step-item ${activeStep === 97 ? "active" : ""}`} style={{ background: activeStep === 97 ? "rgba(139, 92, 246, 0.15)" : "transparent", border: "none", color: activeStep === 97 ? "white" : "var(--text-muted)", cursor: "pointer", paddingLeft: "1rem" }}>
+              <div className="step-icon-container" style={{ color: "#a78bfa" }}><BookOpen size={16} /></div> <span className="sidebar-text" style={{ fontSize: "0.85rem", fontWeight: 600 }}>Case Studies</span>
+          </button>
           <button onClick={() => setActiveStep(99)} className="step-item" style={{ background: "transparent", border: "none", color: "var(--text-muted)", cursor: "pointer", paddingLeft: "1rem" }}>
               <div className="step-icon-container"><History size={16} /></div> <span className="sidebar-text" style={{ fontSize: "0.85rem", fontWeight: 600 }}>View Audit Log</span>
           </button>
