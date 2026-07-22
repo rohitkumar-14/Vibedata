@@ -281,6 +281,95 @@ class DataService:
                 "churn_rate": np.round(churn_rate, 4)
             })
             
+        elif dataset_name in ["ecommerce_churn", "ecommerce_customer_churn"]:
+            self.filename = "ecommerce_customer_churn.csv"
+            n_rows = 150
+            np.random.seed(42)
+            
+            customer_ids = [f"CUST-{1000 + i}" for i in range(n_rows)]
+            ages = np.random.randint(18, 65, size=n_rows)
+            genders = np.random.choice(["Female", "Male", "Non-Binary"], size=n_rows, p=[0.48, 0.48, 0.04])
+            tenure = np.random.randint(1, 48, size=n_rows)
+            categories = np.random.choice(["Apparel", "Electronics", "Home & Kitchen", "Beauty", "Sports"], size=n_rows)
+            orders_30d = np.random.poisson(lam=3, size=n_rows)
+            spend = np.round(np.random.gamma(shape=3, scale=120, size=n_rows) + 20, 2)
+            support_tickets = np.random.choice([0, 1, 2, 3, 5, 8], size=n_rows, p=[0.5, 0.25, 0.12, 0.08, 0.03, 0.02])
+            discount_pct = np.round(np.random.uniform(0, 45, size=n_rows), 1)
+            
+            # Churn probability higher with high support tickets and low recent orders
+            churn_probs = 1 / (1 + np.exp(-(-2.0 + 0.5 * support_tickets - 0.4 * orders_30d + 0.02 * discount_pct)))
+            churn_flags = (np.random.uniform(0, 1, n_rows) < churn_probs).astype(int)
+            
+            self.original_df = pd.DataFrame({
+                "customer_id": customer_ids,
+                "age": ages,
+                "gender": genders,
+                "tenure_months": tenure,
+                "preferred_category": categories,
+                "orders_last_30d": orders_30d,
+                "total_spend_usd": spend,
+                "support_tickets": support_tickets,
+                "discount_usage_pct": discount_pct,
+                "churn": churn_flags
+            })
+
+        elif dataset_name in ["saas_ltv", "saas_user_retention"]:
+            self.filename = "saas_user_retention_ltv.csv"
+            n_rows = 140
+            np.random.seed(101)
+            
+            user_ids = [f"USER-{2000 + i}" for i in range(n_rows)]
+            plans = np.random.choice(["Free Tier", "Starter ($29/m)", "Growth ($99/m)", "Enterprise ($499/m)"], size=n_rows, p=[0.4, 0.3, 0.2, 0.1])
+            channels = np.random.choice(["Organic Search", "Google Ads", "LinkedIn Ads", "Referral", "Product Hunt"], size=n_rows)
+            active_mins = np.round(np.random.exponential(scale=25, size=n_rows) + 5, 1)
+            feature_adoption = np.random.randint(10, 100, size=n_rows)
+            
+            mrr_map = {"Free Tier": 0, "Starter ($29/m)": 29, "Growth ($99/m)": 99, "Enterprise ($499/m)": 499}
+            mrr = [mrr_map[p] for p in plans]
+            
+            health_scores = np.clip(np.round(feature_adoption * 0.6 + active_mins * 0.4 + np.random.normal(0, 10, n_rows)), 10, 100).astype(int)
+            risk_levels = ["Low Risk" if h > 70 else "Medium Risk" if h > 45 else "High Churn Risk" for h in health_scores]
+            
+            self.original_df = pd.DataFrame({
+                "user_id": user_ids,
+                "plan_type": plans,
+                "signup_channel": channels,
+                "daily_active_mins": active_mins,
+                "feature_adoption_score": feature_adoption,
+                "monthly_recurring_revenue": mrr,
+                "health_score": health_scores,
+                "churn_risk": risk_levels
+            })
+
+        elif dataset_name in ["marketing_roi", "marketing_attribution"]:
+            self.filename = "marketing_campaign_attribution.csv"
+            n_rows = 120
+            np.random.seed(202)
+            
+            campaign_ids = [f"CMP-{3000 + i}" for i in range(n_rows)]
+            channels = np.random.choice(["Google Ads", "Facebook Ads", "LinkedIn B2B", "SEO Organic", "Email Newsletter"], size=n_rows)
+            ad_spend = np.round(np.random.uniform(500, 15000, size=n_rows), 2)
+            impressions = (ad_spend * np.random.uniform(40, 120, size=n_rows)).astype(int)
+            clicks = (impressions * np.random.uniform(0.015, 0.055, size=n_rows)).astype(int)
+            conversions = (clicks * np.random.uniform(0.03, 0.12, size=n_rows)).astype(int)
+            
+            avg_deal_value = np.random.choice([150, 450, 1200], size=n_rows, p=[0.5, 0.35, 0.15])
+            revenue = np.round(conversions * avg_deal_value, 2)
+            cpc = np.round(ad_spend / np.maximum(clicks, 1), 2)
+            roi_multiplier = np.round(revenue / np.maximum(ad_spend, 1), 2)
+            
+            self.original_df = pd.DataFrame({
+                "campaign_id": campaign_ids,
+                "channel": channels,
+                "ad_spend_usd": ad_spend,
+                "impressions": impressions,
+                "clicks": clicks,
+                "conversions": conversions,
+                "revenue_generated_usd": revenue,
+                "cost_per_click": cpc,
+                "roi_multiplier": roi_multiplier
+            })
+            
         else:
             raise ValueError(f"Unknown demo dataset: {dataset_name}")
             
